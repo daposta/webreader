@@ -20,7 +20,7 @@ function WordListController($scope, Word) {
     
 }
 
-function WordCreateController($scope, $routeParams, $location,  $http) {
+function WordCreateController($scope, $routeParams, $location,  $http, $timeout) {
 
     
     $scope.processing = false;
@@ -35,7 +35,10 @@ function WordCreateController($scope, $routeParams, $location,  $http) {
         .then(function(response) {
             toastr.success("Submitted New URL");
              $scope.processing = false;
+            // $scope.words = response.data;
+             $timeout(function(){
             $scope.words = response.data;
+        }, 1000);
         },  function errorCallback(err){
              
           

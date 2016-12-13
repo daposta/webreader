@@ -10,11 +10,11 @@ from sqlalchemy import Column, Integer, String, DateTime, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from extractor import process_url
 from app_crypt import hash_password
+import config
 
 
 
-
-engine = create_engine('mysql://root:0703@localhost', echo=False)
+engine = create_engine(('mysql://%s:%s@localhost' %(config.DB_USER,config.DB_PASSWORD )), echo=False)
 engine.execute("CREATE DATABASE IF NOT EXISTS octopusDB;") #create db
 engine.execute("USE octopusDB") # select new db
 
@@ -65,7 +65,6 @@ class WordsHandler(web.RequestHandler):
 		data = process_url(url_data['url'])
 		words_list = []
 		for  counter, item  in enumerate(data):
-			print item
 			_word =  ''.join(ch for ch in item if ch.isalpha())#.split('\\')[0]
 			_frequency = data[item]
 			old_word = None
@@ -87,8 +86,7 @@ class WordsHandler(web.RequestHandler):
 				words_dict['word'] = _word
 				words_dict['size'] = _frequency
 				words_list.append(words_dict)
-				# counter = counter+ 1
-				print 'counter>>>>>>', counter
+				
 		session.commit()
 		self.set_header("Content-Type", "application/json")
 		#self.set_status(201)
