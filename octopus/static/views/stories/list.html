@@ -1,0 +1,11 @@
+<h2>
+	URLS <a class="btn btn-primary pull-right" href="#/words/new"><i
+		class="icon-plus-sign icon-white"></i> Submit New URL</a>
+</h2>
+
+<table class="table table-striped">
+	<tr ng-repeat="story in words">
+		<td><a href="#/stories/{{story._id.$oid}}">{{story.word}}</a></td>
+		<td>{{story.frequency}}</td>
+	</tr>
+</table>

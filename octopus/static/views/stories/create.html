@@ -1,0 +1,28 @@
+
+
+<div class="row">
+<div class="col-md-4"></div>
+<div class="col-md-8">
+<form novalidate class="form-horizontal" name="urlform" ng-submit="urlform.$valid && save()">
+
+	<div class="control-group">
+		<label class="control-label" for="url">Url</label>
+		<div class="controls">
+			<input type="url" ng-model="word.url" name="url" id="url" required="required"/>
+		</div>
+		 <span style="color:red" ng-show="urlform.url.$error.required && (urlform.$submitted || urlform.url.$dirty)"  class="error">URL required!</span>
+
+	</div>
+	
+	<div class="control-group text-center">
+		<button type="submit" id="save" class="btn btn-primary ">Submit URL</button>
+	</div>
+</form>
+</div>
+</div>
+<div class="row" >
+<div class="col-md-4"></div>
+	<div class="col-md-8">
+	<tang-cloud words="words" ></tang-cloud>
+	</div>
+</div>
