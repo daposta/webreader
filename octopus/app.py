@@ -3,18 +3,14 @@ from tornado import ioloop,web
 from tornado.escape import json_encode
 from pymongo import MongoClient
 import json
-from bson import json_util
-from bson.objectid import ObjectId
+# from bson import json_util
+# from bson.objectid import ObjectId
 from sqlalchemy import create_engine
 from sqlalchemy import Column, Integer, String, DateTime, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from extractor import process_url
 from app_crypt import hash_password
-# MONGODB_DB_URL = os.environ.get('OPENSHIFT_MONGODB_DB_URL') if os.environ.get('OPENSHIFT_MONGODB_DB_URL') else 'mongodb://localhost:27017/'
-# MONGODB_DB_NAME = os.environ.get('OPENSHIFT_APP_NAME') if os.environ.get('OPENSHIFT_APP_NAME') else 'getbookmarks'
 
-# client = MongoClient(MONGODB_DB_URL)
-# db = client[MONGODB_DB_NAME]
 
 
 
@@ -53,7 +49,7 @@ class IndexHandler(web.RequestHandler):
 
 class WordsHandler(web.RequestHandler):
 	def get(self):
-		words = session.query(Word).all() #db.stories.find()
+		words = session.query(Word).order_by(Word.frequency.desc()) #db.stories.find()
 		words_list = []
 		for row in words:
 			words_dict = {}
@@ -68,10 +64,12 @@ class WordsHandler(web.RequestHandler):
 		url_data = json.loads(self.request.body)
 		data = process_url(url_data['url'])
 		words_list = []
-		for item in data:
+		for  counter, item  in enumerate(data):
+			print item
 			_word =  ''.join(ch for ch in item if ch.isalpha())#.split('\\')[0]
 			_frequency = data[item]
 			old_word = None
+			# counter = 1
 			if len(_word)> 1:
 				try:
 					old_word =  session.query(Word).filter_by(word = _word ).one() 
@@ -85,20 +83,23 @@ class WordsHandler(web.RequestHandler):
 					old_word.frequency = old_word.frequency + _frequency
 					session.add(old_word)
 				words_dict = {}
+				words_dict['id'] = counter 
 				words_dict['word'] = _word
 				words_dict['size'] = _frequency
 				words_list.append(words_dict)
+				# counter = counter+ 1
+				print 'counter>>>>>>', counter
 		session.commit()
 		self.set_header("Content-Type", "application/json")
 		#self.set_status(201)
 		self.write(json.dumps(words_list))
 		
 
-class WordHandler(web.RequestHandler):
-	def get(self , wordId):
-		word = session.query(word).filter(id = wordId ).one() 
-		self.set_header("Content-Type", "application/json")
-		self.write(json.dumps((word),default=json_util.default))
+# class WordHandler(web.RequestHandler):
+# 	def get(self , wordId):
+# 		word = session.query(word).filter(id = wordId ).one() 
+# 		self.set_header("Content-Type", "application/json")
+# 		self.write(json.dumps((word),default=json_util.default))
 
 
 settings = {
@@ -111,7 +112,7 @@ application = web.Application([
 	(r'/', IndexHandler),
 	(r'/index', IndexHandler),
 	(r'/api/v1/words', WordsHandler),
-	(r'/api/v1/words/(.*)', WordHandler),
+	# (r'/api/v1/words/(.*)', WordHandler),
 ],**settings)
 
 if __name__ == "__main__":

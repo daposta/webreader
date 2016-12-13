@@ -23,10 +23,10 @@ function WordListController($scope, Word) {
 function WordCreateController($scope, $routeParams, $location,  $http) {
 
     
-
+    $scope.processing = false;
     $scope.save = function () {
        
-         console.log($scope);
+          $scope.processing = true;
          var payload = {'url': $scope.word.url
          }; 
          console.log(payload);
@@ -34,7 +34,7 @@ function WordCreateController($scope, $routeParams, $location,  $http) {
          $http({method:'POST', url: '/api/v1/words', data:payload})
         .then(function(response) {
             toastr.success("Submitted New URL");
-            console.log(response)
+             $scope.processing = false;
             $scope.words = response.data;
         },  function errorCallback(err){
              
@@ -42,20 +42,14 @@ function WordCreateController($scope, $routeParams, $location,  $http) {
              });
 
 
-        //  $scope.word.$save(function (word, headers) {
-        //     toastr.success("Submitted New Story");
-        //     console.log(word);
-        //     console.log(headers);
-        //     //$location.path('/');
-        // });
     	
     };
 }
 
 
-function StoryDetailController($scope, $routeParams, $location, Story) {
-    var storyId = $routeParams.storyId;
+// function StoryDetailController($scope, $routeParams, $location, Story) {
+//     var storyId = $routeParams.storyId;
     
-    $scope.story = Story.get({storyId: storyId});
+//     $scope.story = Story.get({storyId: storyId});
 
-}
+// }
