@@ -4,13 +4,18 @@
 
 <div class="col-md-6 text-center">
 <form novalidate class="form-inline" name="urlform" ng-submit="urlform.$valid && save()">
-
+	<div class="alert alert-danger" role="alert" ng-show="error">
+		  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+		  <span class="sr-only">Error:</span>
+		  {{error}}
+	</div>
 	<div class="form-group">
 		<label class="" for="url">Url:</label>
-		
+			
 			<input type="url" class="form-control" ng-model="word.url" name="url"  required=""/>
 		
 		 <span style="color:red" ng-show="urlform.url.$error.required && (urlform.$submitted || urlform.url.$dirty)"  class="error">URL required!</span>
+
 
 	</div>
 	

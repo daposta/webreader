@@ -1,17 +1,15 @@
 import os
-from tornado import ioloop,web
+from tornado import ioloop,web, wsgi
 from tornado.escape import json_encode
-from pymongo import MongoClient
 import json
-# from bson import json_util
-# from bson.objectid import ObjectId
+
 from sqlalchemy import create_engine
 from sqlalchemy import Column, Integer, String, DateTime, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from extractor import process_url
 from app_crypt import hash_password
 import config
-
+ 
 
 
 engine = create_engine(('mysql://%s:%s@localhost' %(config.DB_USER,config.DB_PASSWORD )), echo=False)
@@ -103,16 +101,19 @@ class WordsHandler(web.RequestHandler):
 settings = {
     "template_path": os.path.join(os.path.dirname(__file__), "templates"),
     "static_path": os.path.join(os.path.dirname(__file__), "static"),
-    "debug" : True
+   
+    #"xsrf_cookies": True,
 }
 
 application = web.Application([
 	(r'/', IndexHandler),
 	(r'/index', IndexHandler),
 	(r'/api/v1/words', WordsHandler),
-	# (r'/api/v1/words/(.*)', WordHandler),
+	
 ],**settings)
 
-if __name__ == "__main__":
-	application.listen(8888)
-	ioloop.IOLoop.instance().start()
+# if __name__ == "__main__":
+# 	application.listen(8888)
+# 	ioloop.IOLoop.instance().start()
+
+application = wsgi.WSGIAdapter(application)

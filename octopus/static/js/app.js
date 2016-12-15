@@ -29,7 +29,7 @@ function WordCreateController($scope, $routeParams, $location,  $http, $timeout)
           $scope.processing = true;
          var payload = {'url': $scope.word.url
          }; 
-         console.log(payload);
+         $scope.words =[];
 
          $http({method:'POST', url: '/api/v1/words', data:payload})
         .then(function(response) {
@@ -40,8 +40,8 @@ function WordCreateController($scope, $routeParams, $location,  $http, $timeout)
             $scope.words = response.data;
         }, 1000);
         },  function errorCallback(err){
-             
-          
+              $scope.processing = false;
+                $scope.error  = ' There was an error processing URL'
              });
 
 

@@ -1,8 +1,18 @@
 import urllib2
 
 import nltk, re, pprint
+try:
+	nltk.data.path.append('nltk_data')
+except Exception, e:
+	raise e
+
+
 from nltk import word_tokenize
+
+
+
 from bs4 import BeautifulSoup
+
 
 
 
